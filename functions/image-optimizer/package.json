@@ -1,0 +1,27 @@
+{
+    "name": "@developer-infrastructure/lambda-image-optimizer",
+    "version": "1.0.0",
+    "description": "AWS Lambda function for image optimization",
+    "main": "dist/index.js",
+    "type": "module",
+    "scripts": {
+        "build": "tsc",
+        "bundle": "esbuild src/index.ts --bundle --platform=node --target=node20 --outfile=dist/index.js",
+        "package": "npm run bundle && powershell \"Compress-Archive -Path dist/index.js -DestinationPath function.zip -Force\"",
+        "deploy": "tsx src/deploy.ts",
+        "test": "tsx src/test-trigger.ts"
+    },
+    "dependencies": {
+        "@aws-sdk/client-dynamodb": "^3.717.0",
+        "@aws-sdk/client-s3": "^3.717.0",
+        "@aws-sdk/lib-dynamodb": "^3.717.0"
+    },
+    "devDependencies": {
+        "@aws-sdk/client-lambda": "^3.958.0",
+        "@types/aws-lambda": "^8.10.145",
+        "@types/node": "^20.14.0",
+        "esbuild": "^0.27.2",
+        "tsx": "^4.21.0",
+        "typescript": "^5.5.0"
+    }
+}

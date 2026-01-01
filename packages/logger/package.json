@@ -1,0 +1,19 @@
+{
+    "name": "@developer-infrastructure/logger",
+    "version": "1.0.0",
+    "description": "Centralized logging package",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "type": "module",
+    "scripts": {
+        "build": "tsc",
+        "dev": "tsc --watch"
+    },
+    "dependencies": {
+        "winston": "^3.11.0"
+    },
+    "devDependencies": {
+        "@types/node": "^20.14.0",
+        "typescript": "^5.5.0"
+    }
+}

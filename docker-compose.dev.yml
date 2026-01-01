@@ -1,0 +1,185 @@
+version: "3.8"
+
+services:
+  audit-log:
+    ports:
+      - "${AUDIT_LOG_PORT:-3000}:${AUDIT_LOG_PORT:-3000}"
+    environment:
+      - NODE_ENV=development
+      - PORT=${AUDIT_LOG_PORT:-3000}
+    env_file:
+      - .env.local
+    volumes:
+      - ./services/audit-log:/app
+      - /app/node_modules
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - app-network
+    command: npm run dev
+
+  auth:
+    ports:
+      - "${AUTH_PORT:-3001}:${AUTH_PORT:-3001}"
+    environment:
+      - NODE_ENV=development
+      - PORT=${AUTH_PORT:-3001}
+    env_file:
+      - .env.local
+    volumes:
+      - ./services/auth:/app
+      - /app/node_modules
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - app-network
+    command: npm run dev
+
+  config:
+    ports:
+      - "${CONFIG_PORT:-3002}:${CONFIG_PORT:-3002}"
+    environment:
+      - NODE_ENV=development
+      - PORT=${CONFIG_PORT:-3002}
+    env_file:
+      - .env.local
+    volumes:
+      - ./services/config:/app
+      - /app/node_modules
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - app-network
+    command: npm run dev
+
+  event-bus:
+    ports:
+      - "${EVENT_BUS_PORT:-3003}:${EVENT_BUS_PORT:-3003}"
+    environment:
+      - NODE_ENV=development
+      - PORT=${EVENT_BUS_PORT:-3003}
+    env_file:
+      - .env.local
+    volumes:
+      - ./services/event-bus:/app
+      - /app/node_modules
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - app-network
+    command: npm run dev
+
+  feature-flags:
+    ports:
+      - "${FEATURE_FLAGS_PORT:-3004}:${FEATURE_FLAGS_PORT:-3004}"
+    environment:
+      - NODE_ENV=development
+      - PORT=${FEATURE_FLAGS_PORT:-3004}
+    env_file:
+      - .env.local
+    volumes:
+      - ./services/feature-flags:/app
+      - /app/node_modules
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - app-network
+    command: npm run dev
+
+  gateway:
+    ports:
+      - "${GATEWAY_PORT:-3005}:${GATEWAY_PORT:-3005}"
+    environment:
+      - NODE_ENV=development
+      - PORT=${GATEWAY_PORT:-3005}
+    env_file:
+      - .env.local
+    volumes:
+      - ./services/gateway:/app
+      - /app/node_modules
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - app-network
+    command: npm run dev
+
+  notification:
+    ports:
+      - "${NOTIFICATION_PORT:-3006}:${NOTIFICATION_PORT:-3006}"
+    environment:
+      - NODE_ENV=development
+      - PORT=${NOTIFICATION_PORT:-3006}
+    env_file:
+      - .env.local
+    volumes:
+      - ./services/notification:/app
+      - /app/node_modules
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - app-network
+    command: npm run dev
+
+  rate-limit:
+    ports:
+      - "${RATE_LIMIT_PORT:-3007}:${RATE_LIMIT_PORT:-3007}"
+    environment:
+      - NODE_ENV=development
+      - PORT=${RATE_LIMIT_PORT:-3007}
+    env_file:
+      - .env.local
+    volumes:
+      - ./services/rate-limit:/app
+      - /app/node_modules
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - app-network
+    command: npm run dev
+
+  worker:
+    ports:
+      - "${WORKER_PORT:-3008}:${WORKER_PORT:-3008}"
+    environment:
+      - NODE_ENV=development
+      - PORT=${WORKER_PORT:-3008}
+    env_file:
+      - .env.local
+    volumes:
+      - ./services/worker:/app
+      - /app/node_modules
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - app-network
+    command: npm run dev
+
+  redis:
+    ports:
+      - "6379:6379"
+    networks:
+      - app-network
+
+  postgres:
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+    volumes:
+      - postgres-data-dev:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+volumes:
+  postgres-data-dev:

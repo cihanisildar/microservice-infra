@@ -1,0 +1,26 @@
+{
+  "name": "developer_infrastructure",
+  "version": "1.0.0",
+  "workspaces": [
+    "packages/*",
+    "services/*",
+    "functions/*"
+  ],
+  "description": "Root package for development tooling (linting, formatting). Services have their own package.json files.",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint . --ext .js",
+    "lint:fix": "eslint . --ext .js --fix",
+    "format": "prettier --write \"**/*.{js,json,yml,yaml,md}\"",
+    "format:check": "prettier --check \"**/*.{js,json,yml,yaml,md}\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^9.39.2",
+    "prettier": "^3.7.4"
+  }
+}
