@@ -1,11 +1,23 @@
 import { Router, Request, Response } from 'express';
-import { HealthStatus, HealthCheck } from '@developer-infrastructure/shared-types';
 import { config } from '../config/index.js';
+import { HealthStatus, HealthCheck } from '../docs/schemas/common.js';
 
 const router = Router();
 
 /**
- * Basic health check
+ * @openapi
+ * /health:
+ *   get:
+ *     summary: Basic health check
+ *     tags: [Health, Public]
+ *     security: []
+ *     responses:
+ *       200:
+ *         description: Service is healthy
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/HealthStatus'
  */
 router.get('/health', (req: Request, res: Response) => {
     const health: HealthStatus = {
@@ -19,7 +31,26 @@ router.get('/health', (req: Request, res: Response) => {
 });
 
 /**
- * Detailed health check with service dependencies
+ * @openapi
+ * /health/detailed:
+ *   get:
+ *     summary: Detailed health check
+ *     description: Checks connection to all dependent services
+ *     tags: [Health, Public]
+ *     security: []
+ *     responses:
+ *       200:
+ *         description: Service is healthy
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/HealthStatus'
+ *       503:
+ *         description: Service is unhealthy
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/HealthStatus'
  */
 router.get('/health/detailed', async (req: Request, res: Response) => {
     const checks: HealthCheck[] = [];
@@ -64,7 +95,15 @@ router.get('/health/detailed', async (req: Request, res: Response) => {
 });
 
 /**
- * Metrics endpoint
+ * @openapi
+ * /metrics:
+ *   get:
+ *     summary: System metrics
+ *     description: Detailed resource usage and app metrics
+ *     tags: [Health, Admin]
+ *     responses:
+ *       200:
+ *         description: Metrics data
  */
 router.get('/metrics', (req: Request, res: Response) => {
     // TODO: Implement Prometheus metrics

@@ -60,4 +60,4 @@ infra/nginx/ssl/*.key
 infra/nginx/ssl/*.crt
 
 # Docs
-docs/
+/docs/

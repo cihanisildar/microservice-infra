@@ -61,6 +61,15 @@ export enum EventType {
 }
 
 /**
+ * API Documentation Tags
+ */
+export enum ApiTag {
+    PUBLIC = 'Public',
+    ADMIN = 'Admin',
+    INTERNAL = 'Internal',
+}
+
+/**
  * Event payload structure
  */
 export interface EventPayload<T = any> {

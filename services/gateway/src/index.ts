@@ -8,6 +8,8 @@ import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 import { globalRateLimiter } from './middleware/rateLimiter.js';
 import healthRoutes from './routes/health.js';
 import apiRoutes from './routes/api.js';
+import { apiReference } from '@scalar/express-api-reference';
+import { publicApiSpec, adminApiSpec } from './config/swagger.js';
 
 const app = express();
 
@@ -27,6 +29,28 @@ app.use(requestLogger);
 
 // Rate limiting
 app.use(globalRateLimiter);
+
+// API Documentation - Public
+app.use(
+    '/docs',
+    apiReference({
+        theme: 'deepSpace',
+        spec: {
+            content: publicApiSpec,
+        },
+    }),
+);
+
+// API Documentation - Admin
+app.use(
+    '/docs/admin',
+    apiReference({
+        theme: 'deepSpace',
+        spec: {
+            content: adminApiSpec,
+        },
+    }),
+);
 
 // Health & metrics routes (no /api/v1 prefix)
 app.use(healthRoutes);

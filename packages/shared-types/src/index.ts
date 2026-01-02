@@ -1,3 +1,11 @@
+import { ErrorResponse } from './schemas/common.js';
+export * from './schemas/common.js';
+export * from './schemas/auth.js';
+export * from './schemas/audit.js';
+export * from './schemas/notification.js';
+export * from './schemas/config.js';
+export * from './schemas/feature-flags.js';
+
 /**
  * Base response interface for all API responses
  */
@@ -6,16 +14,6 @@ export interface ApiResponse<T = any> {
     data?: T;
     error?: ErrorResponse;
     meta?: ResponseMeta;
-}
-
-/**
- * Error response structure
- */
-export interface ErrorResponse {
-    code: string;
-    message: string;
-    field?: string;
-    details?: Record<string, any>;
 }
 
 /**
@@ -58,27 +56,6 @@ export enum UserRole {
 }
 
 /**
- * Service health status
- */
-export interface HealthStatus {
-    status: 'healthy' | 'degraded' | 'unhealthy';
-    service: string;
-    version: string;
-    timestamp: number;
-    checks?: HealthCheck[];
-}
-
-/**
- * Individual health check
- */
-export interface HealthCheck {
-    name: string;
-    status: 'pass' | 'fail';
-    message?: string;
-    responseTime?: number;
-}
-
-/**
  * Request context passed between services
  */
 export interface RequestContext {
@@ -89,14 +66,8 @@ export interface RequestContext {
     source?: string;
 }
 
-// Export enums
+// Export internal modules
 export * from './enums.js';
-
-// Export errors
 export * from './errors.js';
-
-// Export middleware
 export * from './middleware.js';
-
-// Export config utilities
 export * from './config.js';
