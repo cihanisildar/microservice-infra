@@ -2,7 +2,12 @@ import { Router } from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { config } from '../config/index.js';
 import { authRateLimiter } from '../middleware/rateLimiter.js';
-import { ApiTag } from '@developer-infrastructure/shared-types';
+import {
+    ApiTag,
+    validateRequest,
+    RegisterRequestSchema,
+    LoginRequestSchema
+} from '@developer-infrastructure/shared-types';
 
 const router = Router();
 
@@ -36,7 +41,12 @@ const authProxy = createProxyMiddleware({
  *       400:
  *         description: Invalid input
  */
-router.post('/register', authRateLimiter, authProxy);
+router.post(
+    '/register',
+    authRateLimiter,
+    validateRequest({ body: RegisterRequestSchema }),
+    authProxy
+);
 
 /**
  * @openapi
@@ -60,6 +70,11 @@ router.post('/register', authRateLimiter, authProxy);
  *       401:
  *         description: Invalid credentials
  */
-router.post('/login', authRateLimiter, authProxy);
+router.post(
+    '/login',
+    authRateLimiter,
+    validateRequest({ body: LoginRequestSchema }),
+    authProxy
+);
 
 export default router;

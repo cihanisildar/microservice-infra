@@ -2,7 +2,11 @@ import { Router } from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { config } from '../config/index.js';
 import { authMiddleware } from '../middleware/auth.js';
-import { ApiTag } from '@developer-infrastructure/shared-types';
+import {
+    ApiTag,
+    validateRequest,
+    ConfigSchema
+} from '@developer-infrastructure/shared-types';
 
 const router = Router();
 
@@ -51,6 +55,11 @@ router.get('/', authMiddleware, configProxy);
  *       200:
  *         description: Configuration updated
  */
-router.post('/', authMiddleware, configProxy);
+router.post(
+    '/',
+    authMiddleware,
+    validateRequest({ body: ConfigSchema }),
+    configProxy
+);
 
 export default router;

@@ -47,17 +47,12 @@ export enum ErrorCode {
 }
 
 /**
- * Event types for event bus
+ * User roles in the system
  */
-export enum EventType {
-    USER_CREATED = 'user.created',
-    USER_UPDATED = 'user.updated',
-    USER_DELETED = 'user.deleted',
-
-    AUDIT_LOG_CREATED = 'audit.log.created',
-
-    NOTIFICATION_SENT = 'notification.sent',
-    NOTIFICATION_FAILED = 'notification.failed',
+export enum UserRole {
+    ADMIN = 'admin',
+    USER = 'user',
+    SERVICE = 'service',
 }
 
 /**
@@ -69,15 +64,4 @@ export enum ApiTag {
     INTERNAL = 'Internal',
 }
 
-/**
- * Event payload structure
- */
-export interface EventPayload<T = any> {
-    type: EventType;
-    data: T;
-    metadata: {
-        requestId: string;
-        timestamp: number;
-        source: string;
-    };
-}
+

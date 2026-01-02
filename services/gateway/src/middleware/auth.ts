@@ -1,23 +1,22 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { UnauthorizedError, UserRole } from '@developer-infrastructure/shared-types';
+import {
+    UnauthorizedError,
+    UserRole,
+    UserPayload
+} from '@developer-infrastructure/shared-types';
 import { config } from '../config/index.js';
-
-interface JwtPayload {
-    sub: string;
-    email: string;
-    role: UserRole;
-}
 
 /**
  * Extend Express Request to include user identity
  */
 export interface AuthenticatedRequest extends Request {
-    user?: JwtPayload;
+    user?: UserPayload;
 }
 
 /**
  * Auth middleware - validates JWT tokens
+ * This is the Gatekeeper of the entire microservice ecosystem.
  */
 export const authMiddleware = async (
     req: AuthenticatedRequest,
@@ -34,17 +33,22 @@ export const authMiddleware = async (
         const token = authHeader.substring(7);
 
         try {
-            const decoded = jwt.verify(token, config.jwt.secret) as JwtPayload;
+            // Verify token signature and expiration
+            const decoded = jwt.verify(token, config.jwt.secret) as UserPayload;
+
+            // Set user on request for local gateway use
             req.user = decoded;
 
-            // Professionally, we inject user identity into headers for downstream services
-            // This way they don't ALL need to verify the JWT
+            // [ELITE MOVE] Identity Injection
+            // We propagate the verified identity to downstream microservices via headers.
+            // This ensures services don't need to re-verify the JWT signature.
             req.headers['x-user-id'] = decoded.sub;
             req.headers['x-user-role'] = decoded.role;
             req.headers['x-user-email'] = decoded.email;
 
             next();
         } catch (err) {
+            // jwt.verify throws error for expired or invalid tokens
             throw new UnauthorizedError('Invalid or expired token');
         }
     } catch (error) {
@@ -53,7 +57,7 @@ export const authMiddleware = async (
 };
 
 /**
- * Optional auth middleware - doesn't fail if no token
+ * Optional auth middleware - passes through if no token is found
  */
 export const optionalAuthMiddleware = async (
     req: AuthenticatedRequest,
@@ -66,13 +70,15 @@ export const optionalAuthMiddleware = async (
         if (authHeader && authHeader.startsWith('Bearer ')) {
             const token = authHeader.substring(7);
             try {
-                const decoded = jwt.verify(token, config.jwt.secret) as JwtPayload;
+                const decoded = jwt.verify(token, config.jwt.secret) as UserPayload;
                 req.user = decoded;
+
+                // Still inject headers if token is present
                 req.headers['x-user-id'] = decoded.sub;
                 req.headers['x-user-role'] = decoded.role;
                 req.headers['x-user-email'] = decoded.email;
             } catch (err) {
-                // Ignore invalid tokens for optional auth
+                // Ignore invalid tokens for optional auth routes
             }
         }
 
